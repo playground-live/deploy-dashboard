@@ -1,0 +1,24 @@
+# test3環境デプロイの例
+# workflow_dispatchで任意のブランチをtest3環境にデプロイする
+name: Deploy to Test3
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # ============================
+      # ここにデプロイ処理を記述
+      # ============================
+
+      - name: Report deployment
+        uses: myorg/deploy-dashboard/.github/actions/report-deployment@main
+        with:
+          service: ${{ github.event.repository.name }}
+          environment: test3
+          dashboard-url: ${{ secrets.DASHBOARD_URL }}
+          api-key: ${{ secrets.DASHBOARD_API_KEY }}

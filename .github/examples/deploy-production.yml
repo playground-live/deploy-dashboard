@@ -1,0 +1,30 @@
+# sandbox/stg/prod環境デプロイの例
+# prodブランチへのpush + vタグでsandbox, stg, prod環境にデプロイする
+name: Deploy to Production
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        environment: [sandbox, stg, prod]
+    steps:
+      - uses: actions/checkout@v4
+
+      # ============================
+      # ここにデプロイ処理を記述
+      # environment: ${{ matrix.environment }}
+      # ============================
+
+      - name: Report deployment
+        uses: myorg/deploy-dashboard/.github/actions/report-deployment@main
+        with:
+          service: ${{ github.event.repository.name }}
+          environment: ${{ matrix.environment }}
+          dashboard-url: ${{ secrets.DASHBOARD_URL }}
+          api-key: ${{ secrets.DASHBOARD_API_KEY }}

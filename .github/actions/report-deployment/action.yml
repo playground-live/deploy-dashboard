@@ -1,0 +1,63 @@
+name: 'Report Deployment'
+description: 'デプロイ完了後にDeploy Dashboardへデプロイ情報を通知する'
+
+inputs:
+  service:
+    description: 'サービス名 (例: user-api)'
+    required: true
+  environment:
+    description: 'デプロイ先環境 (dev, test, test2, test3, sandbox, stg, prod)'
+    required: true
+  dashboard-url:
+    description: 'Deploy DashboardのURL (例: https://deploy-dashboard.vercel.app)'
+    required: true
+  api-key:
+    description: 'Dashboard APIキー'
+    required: true
+  tag:
+    description: 'Gitタグ (省略時はgithubコンテキストから自動取得)'
+    required: false
+    default: ''
+  branch:
+    description: 'ブランチ名 (省略時はgithubコンテキストから自動取得)'
+    required: false
+    default: ''
+
+runs:
+  using: composite
+  steps:
+    - name: Report deployment to dashboard
+      shell: bash
+      env:
+        INPUT_TAG: ${{ inputs.tag }}
+        INPUT_BRANCH: ${{ inputs.branch }}
+        AUTO_TAG: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
+        AUTO_BRANCH: ${{ github.head_ref || github.ref_name }}
+      run: |
+        TAG="${INPUT_TAG:-$AUTO_TAG}"
+        BRANCH="${INPUT_BRANCH:-$AUTO_BRANCH}"
+
+        # タグからv prefixを保持してそのまま送信
+        HTTP_CODE=$(curl -sf -o /dev/null -w "%{http_code}" \
+          -X POST "${{ inputs.dashboard-url }}/api/deployments" \
+          -H "Authorization: Bearer ${{ inputs.api-key }}" \
+          -H "Content-Type: application/json" \
+          -d "{
+            \"service\": \"${{ inputs.service }}\",
+            \"environment\": \"${{ inputs.environment }}\",
+            \"tag\": \"${TAG}\",
+            \"branch\": \"${BRANCH}\",
+            \"commitSha\": \"${{ github.sha }}\",
+            \"deployedBy\": \"${{ github.actor }}\"
+          }")
+
+        if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 300 ]; then
+          echo "✅ Deployment reported successfully (HTTP $HTTP_CODE)"
+          echo "   Service: ${{ inputs.service }}"
+          echo "   Environment: ${{ inputs.environment }}"
+          echo "   Tag: ${TAG:-'(none)'}"
+          echo "   Branch: ${BRANCH}"
+        else
+          echo "⚠️ Failed to report deployment (HTTP $HTTP_CODE)"
+          echo "   This does not affect the deployment itself."
+        fi

@@ -1,0 +1,29 @@
+# test/test2環境デプロイの例
+# testブランチへのpushでtest, test2環境にデプロイし、ダッシュボードに通知する
+name: Deploy to Test
+
+on:
+  push:
+    branches: [test]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        environment: [test, test2]
+    steps:
+      - uses: actions/checkout@v4
+
+      # ============================
+      # ここにデプロイ処理を記述
+      # environment: ${{ matrix.environment }}
+      # ============================
+
+      - name: Report deployment
+        uses: myorg/deploy-dashboard/.github/actions/report-deployment@main
+        with:
+          service: ${{ github.event.repository.name }}
+          environment: ${{ matrix.environment }}
+          dashboard-url: ${{ secrets.DASHBOARD_URL }}
+          api-key: ${{ secrets.DASHBOARD_API_KEY }}

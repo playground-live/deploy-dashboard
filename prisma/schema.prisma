@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Service {
+  id           String       @id @default(cuid())
+  name         String       @unique
+  repository   String
+  description  String?
+  displayOrder Int          @default(0)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  deployments  Deployment[]
+}
+
+model Deployment {
+  id          String   @id @default(cuid())
+  serviceId   String
+  service     Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  environment String
+  tag         String?
+  branch      String
+  commitSha   String
+  deployedBy  String
+  deployedAt  DateTime @default(now())
+
+  @@index([serviceId, environment, deployedAt(sort: Desc)])
+  @@index([environment])
+}
