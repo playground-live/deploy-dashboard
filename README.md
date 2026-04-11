@@ -74,8 +74,8 @@ Vercel のダッシュボードで環境変数 (`DATABASE_URL`, `DEPLOY_API_KEY`
 
 GitHub Organization の Settings > Secrets に以下を追加:
 
-- `DASHBOARD_URL`: Deploy Dashboard の URL (例: `https://deploy-dashboard.vercel.app`)
-- `DASHBOARD_API_KEY`: `.env` の `DEPLOY_API_KEY` と同じ値
+- `DEPLOY_DASHBOARD_URL`: Deploy Dashboard の URL (例: `https://deploy-dashboard.vercel.app`)
+- `DEPLOY_DASHBOARD_API_KEY`: `.env` の `DEPLOY_API_KEY` と同じ値
 
 ### ワークフローへの組み込み
 
@@ -86,8 +86,8 @@ GitHub Organization の Settings > Secrets に以下を追加:
   with:
     service: ${{ github.event.repository.name }}
     environment: dev  # 環境に応じて変更
-    dashboard-url: ${{ secrets.DASHBOARD_URL }}
-    api-key: ${{ secrets.DASHBOARD_API_KEY }}
+    dashboard-url: ${{ secrets.DEPLOY_DASHBOARD_URL }}
+    api-key: ${{ secrets.DEPLOY_DASHBOARD_API_KEY }}
 ```
 
 ### 環境ごとのワークフロー例

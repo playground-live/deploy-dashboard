@@ -22,5 +22,5 @@ jobs:
         with:
           service: ${{ github.event.repository.name }}
           environment: dev
-          dashboard-url: ${{ secrets.DASHBOARD_URL }}
-          api-key: ${{ secrets.DASHBOARD_API_KEY }}
+          dashboard-url: ${{ secrets.DEPLOY_DASHBOARD_URL }}
+          api-key: ${{ secrets.DEPLOY_DASHBOARD_API_KEY }}

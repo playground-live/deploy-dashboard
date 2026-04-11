@@ -451,8 +451,8 @@ Authorization: Bearer <DEPLOY_API_KEY>
 
 | シークレット名 | 説明 |
 |---------------|------|
-| `DASHBOARD_URL` | Deploy Dashboard の URL |
-| `DASHBOARD_API_KEY` | `DEPLOY_API_KEY` 環境変数に設定した値 |
+| `DEPLOY_DASHBOARD_URL` | Deploy Dashboard の URL |
+| `DEPLOY_DASHBOARD_API_KEY` | `DEPLOY_API_KEY` 環境変数に設定した値 |
 
 ### 9.3 ワークフロー例
 
@@ -471,8 +471,8 @@ steps:
     with:
       service: ${{ github.event.repository.name }}
       environment: dev
-      dashboard-url: ${{ secrets.DASHBOARD_URL }}
-      api-key: ${{ secrets.DASHBOARD_API_KEY }}
+      dashboard-url: ${{ secrets.DEPLOY_DASHBOARD_URL }}
+      api-key: ${{ secrets.DEPLOY_DASHBOARD_API_KEY }}
 ```
 
 #### test 環境（test ブランチ push 時、matrix 使用）
