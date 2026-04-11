@@ -33,65 +33,81 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { service: serviceName, environment, tag, branch, commitSha, deployedBy } = result.data;
+  try {
+    const { service: serviceName, environment, tag, branch, commitSha, deployedBy } = result.data;
 
-  const service = await prisma.service.upsert({
-    where: { name: serviceName },
-    update: {},
-    create: {
-      name: serviceName,
-      repository: serviceName,
-    },
-  });
+    const service = await prisma.service.upsert({
+      where: { name: serviceName },
+      update: {},
+      create: {
+        name: serviceName,
+        repository: serviceName,
+      },
+    });
 
-  const deployment = await prisma.deployment.create({
-    data: {
-      serviceId: service.id,
-      environment,
-      tag: tag || null,
-      branch,
-      commitSha,
-      deployedBy,
-    },
-  });
+    const deployment = await prisma.deployment.create({
+      data: {
+        serviceId: service.id,
+        environment,
+        tag: tag || null,
+        branch,
+        commitSha,
+        deployedBy,
+      },
+    });
 
-  return NextResponse.json({ ok: true, deployment }, { status: 201 });
+    return NextResponse.json({ ok: true, deployment }, { status: 201 });
+  } catch (error) {
+    console.error("POST /api/deployments error:", error);
+    return NextResponse.json(
+      { error: "Internal server error", message: error instanceof Error ? error.message : "Unknown error" },
+      { status: 500 }
+    );
+  }
 }
 
 export async function GET() {
-  const services = await prisma.service.findMany({
-    orderBy: { displayOrder: "asc" },
-  });
+  try {
+    const services = await prisma.service.findMany({
+      orderBy: { displayOrder: "asc" },
+    });
 
-  const latestDeployments = await prisma.$queryRaw<
-    Array<{
-      id: string;
-      serviceId: string;
-      environment: string;
-      tag: string | null;
-      branch: string;
-      commitSha: string;
-      deployedBy: string;
-      deployedAt: Date;
-    }>
-  >`
-    SELECT DISTINCT ON ("serviceId", "environment")
-      "id", "serviceId", "environment", "tag", "branch",
-      "commitSha", "deployedBy", "deployedAt"
-    FROM "Deployment"
-    ORDER BY "serviceId", "environment", "deployedAt" DESC
-  `;
+    const latestDeployments = await prisma.$queryRaw<
+      Array<{
+        id: string;
+        serviceId: string;
+        environment: string;
+        tag: string | null;
+        branch: string;
+        commitSha: string;
+        deployedBy: string;
+        deployedAt: Date;
+      }>
+    >`
+      SELECT DISTINCT ON ("serviceId", "environment")
+        "id", "serviceId", "environment", "tag", "branch",
+        "commitSha", "deployedBy", "deployedAt"
+      FROM "Deployment"
+      ORDER BY "serviceId", "environment", "deployedAt" DESC
+    `;
 
-  const deploymentMap: Record<string, Record<string, (typeof latestDeployments)[number]>> = {};
-  for (const d of latestDeployments) {
-    if (!deploymentMap[d.serviceId]) deploymentMap[d.serviceId] = {};
-    deploymentMap[d.serviceId][d.environment] = d;
+    const deploymentMap: Record<string, Record<string, (typeof latestDeployments)[number]>> = {};
+    for (const d of latestDeployments) {
+      if (!deploymentMap[d.serviceId]) deploymentMap[d.serviceId] = {};
+      deploymentMap[d.serviceId][d.environment] = d;
+    }
+
+    const data = services.map((service) => ({
+      ...service,
+      deployments: deploymentMap[service.id] ?? {},
+    }));
+
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error("GET /api/deployments error:", error);
+    return NextResponse.json(
+      { error: "Internal server error", message: error instanceof Error ? error.message : "Unknown error" },
+      { status: 500 }
+    );
   }
-
-  const data = services.map((service) => ({
-    ...service,
-    deployments: deploymentMap[service.id] ?? {},
-  }));
-
-  return NextResponse.json(data);
 }
