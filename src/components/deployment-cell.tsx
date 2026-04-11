@@ -62,6 +62,8 @@ export function DeploymentCell({ deployment, onClick }: DeploymentCellProps) {
           </div>
           <div className="flex items-center gap-1 text-[10px] text-muted-foreground font-mono">
             <span>{shortSha}</span>
+            <span className="mx-0.5">&middot;</span>
+            <span>{formatRelativeTime(deployment.deployedAt)}</span>
           </div>
         </button>
       </TooltipTrigger>
