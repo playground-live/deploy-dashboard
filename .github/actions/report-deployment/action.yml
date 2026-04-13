@@ -40,7 +40,7 @@ runs:
           -H "Content-Type: application/json" \
           -d "{
             \"repositoryId\": \"${{ github.repository_id }}\",
-            \"repositoryName\": \"${{ github.event.repository.name }}\",
+            \"repositoryName\": \"${{ github.repository }}\",
             \"environment\": \"${{ inputs.environment }}\",
             \"tag\": \"${TAG}\",
             \"branch\": \"${BRANCH}\",
@@ -50,7 +50,7 @@ runs:
 
         if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 300 ]; then
           echo "✅ Deployment reported successfully (HTTP $HTTP_CODE)"
-          echo "   Repository: ${{ github.event.repository.name }} (${{ github.repository_id }})"
+          echo "   Repository: ${{ github.repository }} (${{ github.repository_id }})"
           echo "   Environment: ${{ inputs.environment }}"
           echo "   Tag: ${TAG:-'(none)'}"
           echo "   Branch: ${BRANCH}"

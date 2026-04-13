@@ -78,12 +78,12 @@ export default function ServicesPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[60px]">順序</TableHead>
-                <TableHead>Repository ID</TableHead>
+                <TableHead className="w-[60px]">表示順</TableHead>
                 <TableHead>サービス名</TableHead>
                 <TableHead>リポジトリ</TableHead>
+                <TableHead>リポジトリID</TableHead>
                 <TableHead>説明</TableHead>
-                <TableHead className="w-[100px]">操作</TableHead>
+                <TableHead className="w-[100px]"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -108,9 +108,6 @@ export default function ServicesPage() {
                     <TableCell className="text-center font-mono text-sm">
                       {service.displayOrder}
                     </TableCell>
-                    <TableCell className="font-mono text-sm text-muted-foreground">
-                      {service.repositoryId}
-                    </TableCell>
                     <TableCell className="font-mono font-medium">
                       {service.name}
                     </TableCell>
@@ -123,6 +120,9 @@ export default function ServicesPage() {
                       >
                         {service.repositoryName}
                       </a>
+                    </TableCell>
+                    <TableCell className="font-mono text-sm text-muted-foreground">
+                      {service.repositoryId}
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
                       {service.description || "—"}
