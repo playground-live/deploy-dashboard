@@ -600,8 +600,9 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 
 export const ServiceScalarFieldEnum = {
   id: 'id',
+  repositoryId: 'repositoryId',
   name: 'name',
-  repository: 'repository',
+  repositoryName: 'repositoryName',
   description: 'description',
   displayOrder: 'displayOrder',
   createdAt: 'createdAt',

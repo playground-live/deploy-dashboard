@@ -36,8 +36,9 @@ export type ServiceSumAggregateOutputType = {
 
 export type ServiceMinAggregateOutputType = {
   id: string | null
+  repositoryId: string | null
   name: string | null
-  repository: string | null
+  repositoryName: string | null
   description: string | null
   displayOrder: number | null
   createdAt: Date | null
@@ -46,8 +47,9 @@ export type ServiceMinAggregateOutputType = {
 
 export type ServiceMaxAggregateOutputType = {
   id: string | null
+  repositoryId: string | null
   name: string | null
-  repository: string | null
+  repositoryName: string | null
   description: string | null
   displayOrder: number | null
   createdAt: Date | null
@@ -56,8 +58,9 @@ export type ServiceMaxAggregateOutputType = {
 
 export type ServiceCountAggregateOutputType = {
   id: number
+  repositoryId: number
   name: number
-  repository: number
+  repositoryName: number
   description: number
   displayOrder: number
   createdAt: number
@@ -76,8 +79,9 @@ export type ServiceSumAggregateInputType = {
 
 export type ServiceMinAggregateInputType = {
   id?: true
+  repositoryId?: true
   name?: true
-  repository?: true
+  repositoryName?: true
   description?: true
   displayOrder?: true
   createdAt?: true
@@ -86,8 +90,9 @@ export type ServiceMinAggregateInputType = {
 
 export type ServiceMaxAggregateInputType = {
   id?: true
+  repositoryId?: true
   name?: true
-  repository?: true
+  repositoryName?: true
   description?: true
   displayOrder?: true
   createdAt?: true
@@ -96,8 +101,9 @@ export type ServiceMaxAggregateInputType = {
 
 export type ServiceCountAggregateInputType = {
   id?: true
+  repositoryId?: true
   name?: true
-  repository?: true
+  repositoryName?: true
   description?: true
   displayOrder?: true
   createdAt?: true
@@ -193,8 +199,9 @@ export type ServiceGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 
 export type ServiceGroupByOutputType = {
   id: string
+  repositoryId: string
   name: string
-  repository: string
+  repositoryName: string
   description: string | null
   displayOrder: number
   createdAt: Date
@@ -226,8 +233,9 @@ export type ServiceWhereInput = {
   OR?: Prisma.ServiceWhereInput[]
   NOT?: Prisma.ServiceWhereInput | Prisma.ServiceWhereInput[]
   id?: Prisma.StringFilter<"Service"> | string
+  repositoryId?: Prisma.StringFilter<"Service"> | string
   name?: Prisma.StringFilter<"Service"> | string
-  repository?: Prisma.StringFilter<"Service"> | string
+  repositoryName?: Prisma.StringFilter<"Service"> | string
   description?: Prisma.StringNullableFilter<"Service"> | string | null
   displayOrder?: Prisma.IntFilter<"Service"> | number
   createdAt?: Prisma.DateTimeFilter<"Service"> | Date | string
@@ -237,8 +245,9 @@ export type ServiceWhereInput = {
 
 export type ServiceOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  repositoryId?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  repository?: Prisma.SortOrder
+  repositoryName?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   displayOrder?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -248,22 +257,24 @@ export type ServiceOrderByWithRelationInput = {
 
 export type ServiceWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  name?: string
+  repositoryId?: string
   AND?: Prisma.ServiceWhereInput | Prisma.ServiceWhereInput[]
   OR?: Prisma.ServiceWhereInput[]
   NOT?: Prisma.ServiceWhereInput | Prisma.ServiceWhereInput[]
-  repository?: Prisma.StringFilter<"Service"> | string
+  name?: Prisma.StringFilter<"Service"> | string
+  repositoryName?: Prisma.StringFilter<"Service"> | string
   description?: Prisma.StringNullableFilter<"Service"> | string | null
   displayOrder?: Prisma.IntFilter<"Service"> | number
   createdAt?: Prisma.DateTimeFilter<"Service"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Service"> | Date | string
   deployments?: Prisma.DeploymentListRelationFilter
-}, "id" | "name">
+}, "id" | "repositoryId">
 
 export type ServiceOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  repositoryId?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  repository?: Prisma.SortOrder
+  repositoryName?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   displayOrder?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -280,8 +291,9 @@ export type ServiceScalarWhereWithAggregatesInput = {
   OR?: Prisma.ServiceScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ServiceScalarWhereWithAggregatesInput | Prisma.ServiceScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Service"> | string
+  repositoryId?: Prisma.StringWithAggregatesFilter<"Service"> | string
   name?: Prisma.StringWithAggregatesFilter<"Service"> | string
-  repository?: Prisma.StringWithAggregatesFilter<"Service"> | string
+  repositoryName?: Prisma.StringWithAggregatesFilter<"Service"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Service"> | string | null
   displayOrder?: Prisma.IntWithAggregatesFilter<"Service"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Service"> | Date | string
@@ -290,8 +302,9 @@ export type ServiceScalarWhereWithAggregatesInput = {
 
 export type ServiceCreateInput = {
   id?: string
+  repositoryId: string
   name: string
-  repository: string
+  repositoryName: string
   description?: string | null
   displayOrder?: number
   createdAt?: Date | string
@@ -301,8 +314,9 @@ export type ServiceCreateInput = {
 
 export type ServiceUncheckedCreateInput = {
   id?: string
+  repositoryId: string
   name: string
-  repository: string
+  repositoryName: string
   description?: string | null
   displayOrder?: number
   createdAt?: Date | string
@@ -312,8 +326,9 @@ export type ServiceUncheckedCreateInput = {
 
 export type ServiceUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  repositoryId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  repository?: Prisma.StringFieldUpdateOperationsInput | string
+  repositoryName?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -323,8 +338,9 @@ export type ServiceUpdateInput = {
 
 export type ServiceUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  repositoryId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  repository?: Prisma.StringFieldUpdateOperationsInput | string
+  repositoryName?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -334,8 +350,9 @@ export type ServiceUncheckedUpdateInput = {
 
 export type ServiceCreateManyInput = {
   id?: string
+  repositoryId: string
   name: string
-  repository: string
+  repositoryName: string
   description?: string | null
   displayOrder?: number
   createdAt?: Date | string
@@ -344,8 +361,9 @@ export type ServiceCreateManyInput = {
 
 export type ServiceUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  repositoryId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  repository?: Prisma.StringFieldUpdateOperationsInput | string
+  repositoryName?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -354,8 +372,9 @@ export type ServiceUpdateManyMutationInput = {
 
 export type ServiceUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  repositoryId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  repository?: Prisma.StringFieldUpdateOperationsInput | string
+  repositoryName?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -364,8 +383,9 @@ export type ServiceUncheckedUpdateManyInput = {
 
 export type ServiceCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  repositoryId?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  repository?: Prisma.SortOrder
+  repositoryName?: Prisma.SortOrder
   description?: Prisma.SortOrder
   displayOrder?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -378,8 +398,9 @@ export type ServiceAvgOrderByAggregateInput = {
 
 export type ServiceMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  repositoryId?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  repository?: Prisma.SortOrder
+  repositoryName?: Prisma.SortOrder
   description?: Prisma.SortOrder
   displayOrder?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -388,8 +409,9 @@ export type ServiceMaxOrderByAggregateInput = {
 
 export type ServiceMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  repositoryId?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  repository?: Prisma.SortOrder
+  repositoryName?: Prisma.SortOrder
   description?: Prisma.SortOrder
   displayOrder?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -441,8 +463,9 @@ export type ServiceUpdateOneRequiredWithoutDeploymentsNestedInput = {
 
 export type ServiceCreateWithoutDeploymentsInput = {
   id?: string
+  repositoryId: string
   name: string
-  repository: string
+  repositoryName: string
   description?: string | null
   displayOrder?: number
   createdAt?: Date | string
@@ -451,8 +474,9 @@ export type ServiceCreateWithoutDeploymentsInput = {
 
 export type ServiceUncheckedCreateWithoutDeploymentsInput = {
   id?: string
+  repositoryId: string
   name: string
-  repository: string
+  repositoryName: string
   description?: string | null
   displayOrder?: number
   createdAt?: Date | string
@@ -477,8 +501,9 @@ export type ServiceUpdateToOneWithWhereWithoutDeploymentsInput = {
 
 export type ServiceUpdateWithoutDeploymentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  repositoryId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  repository?: Prisma.StringFieldUpdateOperationsInput | string
+  repositoryName?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -487,8 +512,9 @@ export type ServiceUpdateWithoutDeploymentsInput = {
 
 export type ServiceUncheckedUpdateWithoutDeploymentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  repositoryId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  repository?: Prisma.StringFieldUpdateOperationsInput | string
+  repositoryName?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -528,8 +554,9 @@ export type ServiceCountOutputTypeCountDeploymentsArgs<ExtArgs extends runtime.T
 
 export type ServiceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  repositoryId?: boolean
   name?: boolean
-  repository?: boolean
+  repositoryName?: boolean
   description?: boolean
   displayOrder?: boolean
   createdAt?: boolean
@@ -540,8 +567,9 @@ export type ServiceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
 
 export type ServiceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  repositoryId?: boolean
   name?: boolean
-  repository?: boolean
+  repositoryName?: boolean
   description?: boolean
   displayOrder?: boolean
   createdAt?: boolean
@@ -550,8 +578,9 @@ export type ServiceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
 
 export type ServiceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  repositoryId?: boolean
   name?: boolean
-  repository?: boolean
+  repositoryName?: boolean
   description?: boolean
   displayOrder?: boolean
   createdAt?: boolean
@@ -560,15 +589,16 @@ export type ServiceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
 
 export type ServiceSelectScalar = {
   id?: boolean
+  repositoryId?: boolean
   name?: boolean
-  repository?: boolean
+  repositoryName?: boolean
   description?: boolean
   displayOrder?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ServiceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "repository" | "description" | "displayOrder" | "createdAt" | "updatedAt", ExtArgs["result"]["service"]>
+export type ServiceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "repositoryId" | "name" | "repositoryName" | "description" | "displayOrder" | "createdAt" | "updatedAt", ExtArgs["result"]["service"]>
 export type ServiceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   deployments?: boolean | Prisma.Service$deploymentsArgs<ExtArgs>
   _count?: boolean | Prisma.ServiceCountOutputTypeDefaultArgs<ExtArgs>
@@ -583,8 +613,9 @@ export type $ServicePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    repositoryId: string
     name: string
-    repository: string
+    repositoryName: string
     description: string | null
     displayOrder: number
     createdAt: Date
@@ -1014,8 +1045,9 @@ export interface Prisma__ServiceClient<T, Null = never, ExtArgs extends runtime.
  */
 export interface ServiceFieldRefs {
   readonly id: Prisma.FieldRef<"Service", 'String'>
+  readonly repositoryId: Prisma.FieldRef<"Service", 'String'>
   readonly name: Prisma.FieldRef<"Service", 'String'>
-  readonly repository: Prisma.FieldRef<"Service", 'String'>
+  readonly repositoryName: Prisma.FieldRef<"Service", 'String'>
   readonly description: Prisma.FieldRef<"Service", 'String'>
   readonly displayOrder: Prisma.FieldRef<"Service", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Service", 'DateTime'>
