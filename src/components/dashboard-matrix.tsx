@@ -130,7 +130,7 @@ export function DashboardMatrix() {
                       <TooltipContent side="right">
                         <div className="text-xs space-y-0.5">
                           <div className="text-muted-foreground">ID: {service.repositoryId}</div>
-                          <div>{service.repositoryName}</div>
+                          <div>{service.repositoryName.split("/").pop()}</div>
                           {service.description && (
                             <div className="text-muted-foreground mt-1">
                               {service.description}

@@ -118,7 +118,7 @@ export default function ServicesPage() {
                         rel="noopener noreferrer"
                         className="text-sm text-blue-600 hover:underline dark:text-blue-400"
                       >
-                        {service.repositoryName}
+                        {service.repositoryName.split("/").pop()}
                       </a>
                     </TableCell>
                     <TableCell className="font-mono text-sm text-muted-foreground">

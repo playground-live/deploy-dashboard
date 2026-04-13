@@ -37,12 +37,14 @@ export async function POST(request: NextRequest) {
   try {
     const { repositoryId, repositoryName, environment, tag, branch, commitSha, deployedBy } = result.data;
 
+    const repoShortName = repositoryName.split("/").pop() ?? repositoryName;
+
     const service = await prisma.service.upsert({
       where: { repositoryId },
       update: { repositoryName },
       create: {
         repositoryId,
-        name: repositoryName,
+        name: repoShortName,
         repositoryName,
       },
     });

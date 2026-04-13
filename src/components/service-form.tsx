@@ -75,28 +75,15 @@ export function ServiceFormDialog({
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
-          {isEdit ? (
-            <div className="space-y-2">
-              <Label>GitHub Repository ID</Label>
-              <div className="px-3 py-2 rounded-md bg-muted text-sm font-mono text-muted-foreground">
-                {service!.repositoryId}
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-2">
-              <Label htmlFor="repositoryId">GitHub Repository ID</Label>
-              <Input
-                id="repositoryId"
-                value={repositoryId}
-                onChange={(e) => setRepositoryId(e.target.value)}
-                placeholder="123456789"
-                required
-              />
-              <p className="text-xs text-muted-foreground">
-                GitHubリポジトリの数値ID。CDパイプラインからは自動取得されます
-              </p>
-            </div>
-          )}
+          <div className="space-y-2">
+            <Label htmlFor="displayOrder">表示順</Label>
+            <Input
+              id="displayOrder"
+              type="number"
+              value={displayOrder}
+              onChange={(e) => setDisplayOrder(Number(e.target.value))}
+            />
+          </div>
           <div className="space-y-2">
             <Label htmlFor="name">サービス名</Label>
             <Input
@@ -129,6 +116,28 @@ export function ServiceFormDialog({
               />
             </div>
           )}
+          {isEdit ? (
+            <div className="space-y-2">
+              <Label>リポジトリID</Label>
+              <div className="px-3 py-2 rounded-md bg-muted text-sm font-mono text-muted-foreground">
+                {service!.repositoryId}
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              <Label htmlFor="repositoryId">リポジトリID</Label>
+              <Input
+                id="repositoryId"
+                value={repositoryId}
+                onChange={(e) => setRepositoryId(e.target.value)}
+                placeholder="123456789"
+                required
+              />
+              <p className="text-xs text-muted-foreground">
+                GitHubリポジトリの数値ID。CDパイプラインからは自動取得されます
+              </p>
+            </div>
+          )}
           <div className="space-y-2">
             <Label htmlFor="description">説明</Label>
             <Input
@@ -136,15 +145,6 @@ export function ServiceFormDialog({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="ユーザー管理API"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="displayOrder">表示順</Label>
-            <Input
-              id="displayOrder"
-              type="number"
-              value={displayOrder}
-              onChange={(e) => setDisplayOrder(Number(e.target.value))}
             />
           </div>
           {error && <p className="text-sm text-destructive">{error}</p>}
