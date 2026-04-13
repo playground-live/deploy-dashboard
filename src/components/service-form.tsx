@@ -26,8 +26,9 @@ export function ServiceFormDialog({
   onSaved,
 }: Props) {
   const isEdit = Boolean(service);
+  const [repositoryId, setRepositoryId] = useState(service?.repositoryId ?? "");
   const [name, setName] = useState(service?.name ?? "");
-  const [repository, setRepository] = useState(service?.repository ?? "");
+  const [repositoryName, setRepositoryName] = useState(service?.repositoryName ?? "");
   const [description, setDescription] = useState(service?.description ?? "");
   const [displayOrder, setDisplayOrder] = useState(
     service?.displayOrder ?? 0
@@ -42,8 +43,8 @@ export function ServiceFormDialog({
 
     try {
       const body = isEdit
-        ? { id: service!.id, name, repository, description, displayOrder }
-        : { name, repository, description, displayOrder };
+        ? { id: service!.id, name, description, displayOrder }
+        : { repositoryId, name, repositoryName, description, displayOrder };
 
       const res = await fetch("/api/services", {
         method: isEdit ? "PATCH" : "POST",
@@ -74,27 +75,60 @@ export function ServiceFormDialog({
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
+          {isEdit ? (
+            <div className="space-y-2">
+              <Label>GitHub Repository ID</Label>
+              <div className="px-3 py-2 rounded-md bg-muted text-sm font-mono text-muted-foreground">
+                {service!.repositoryId}
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              <Label htmlFor="repositoryId">GitHub Repository ID</Label>
+              <Input
+                id="repositoryId"
+                value={repositoryId}
+                onChange={(e) => setRepositoryId(e.target.value)}
+                placeholder="123456789"
+                required
+              />
+              <p className="text-xs text-muted-foreground">
+                GitHubリポジトリの数値ID。CDパイプラインからは自動取得されます
+              </p>
+            </div>
+          )}
           <div className="space-y-2">
             <Label htmlFor="name">サービス名</Label>
             <Input
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="user-api"
-              required
-              disabled={isEdit}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="repository">リポジトリ</Label>
-            <Input
-              id="repository"
-              value={repository}
-              onChange={(e) => setRepository(e.target.value)}
-              placeholder="myorg/user-api"
+              placeholder="User API"
               required
             />
           </div>
+          {isEdit ? (
+            <div className="space-y-2">
+              <Label>リポジトリ</Label>
+              <div className="px-3 py-2 rounded-md bg-muted text-sm font-mono text-muted-foreground">
+                {service!.repositoryName}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                CDパイプラインから自動で更新されます
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              <Label htmlFor="repositoryName">リポジトリ名</Label>
+              <Input
+                id="repositoryName"
+                value={repositoryName}
+                onChange={(e) => setRepositoryName(e.target.value)}
+                placeholder="myorg/user-api"
+                required
+              />
+            </div>
+          )}
           <div className="space-y-2">
             <Label htmlFor="description">説明</Label>
             <Input

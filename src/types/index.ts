@@ -13,8 +13,9 @@ export interface DeploymentInfo {
 
 export interface ServiceWithDeployments {
   id: string;
+  repositoryId: string;
   name: string;
-  repository: string;
+  repositoryName: string;
   description: string | null;
   displayOrder: number;
   deployments: Partial<Record<Environment, DeploymentInfo>>;
@@ -22,8 +23,9 @@ export interface ServiceWithDeployments {
 
 export interface ServiceInfo {
   id: string;
+  repositoryId: string;
   name: string;
-  repository: string;
+  repositoryName: string;
   description: string | null;
   displayOrder: number;
   createdAt: string;

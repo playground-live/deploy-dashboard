@@ -18,13 +18,15 @@ import type { DeploymentInfo, DeploymentHistoryResponse } from "@/types";
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  serviceName: string | null;
+  repositoryId: string | null;
+  serviceName?: string | null;
   environment: Environment | null;
 }
 
 export function DeploymentHistoryDrawer({
   open,
   onOpenChange,
+  repositoryId,
   serviceName,
   environment,
 }: Props) {
@@ -35,11 +37,11 @@ export function DeploymentHistoryDrawer({
 
   const fetchHistory = useCallback(
     async (cursor?: string | null) => {
-      if (!serviceName || !environment) return;
+      if (!repositoryId || !environment) return;
       setLoading(true);
       try {
         const params = new URLSearchParams({
-          service: serviceName,
+          repositoryId,
           environment,
           limit: "20",
         });
@@ -58,16 +60,16 @@ export function DeploymentHistoryDrawer({
         setLoading(false);
       }
     },
-    [serviceName, environment]
+    [repositoryId, environment]
   );
 
   useEffect(() => {
-    if (open && serviceName && environment) {
+    if (open && repositoryId && environment) {
       setItems([]);
       setNextCursor(null);
       fetchHistory();
     }
-  }, [open, serviceName, environment, fetchHistory]);
+  }, [open, repositoryId, environment, fetchHistory]);
 
   const envLabel = environment ? ENVIRONMENT_META[environment].label : "";
 
@@ -76,7 +78,7 @@ export function DeploymentHistoryDrawer({
       <SheetContent className="w-[440px] sm:max-w-[440px]">
         <SheetHeader>
           <SheetTitle className="flex items-center gap-2">
-            <span className="font-mono">{serviceName}</span>
+            <span className="font-mono">{serviceName || repositoryId}</span>
             <Badge variant="outline">{envLabel}</Badge>
           </SheetTitle>
           <p className="text-sm text-muted-foreground">デプロイ履歴</p>

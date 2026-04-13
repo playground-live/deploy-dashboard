@@ -2,9 +2,6 @@ name: 'Report Deployment'
 description: 'デプロイ完了後にDeploy Dashboardへデプロイ情報を通知する'
 
 inputs:
-  service:
-    description: 'サービス名 (例: user-api)'
-    required: true
   environment:
     description: 'デプロイ先環境 (dev, test, test2, test3, sandbox, stg, prod)'
     required: true
@@ -37,13 +34,13 @@ runs:
         TAG="${INPUT_TAG:-$AUTO_TAG}"
         BRANCH="${INPUT_BRANCH:-$AUTO_BRANCH}"
 
-        # タグからv prefixを保持してそのまま送信
         HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
           -X POST "${{ inputs.dashboard-url }}/api/deployments" \
           -H "Authorization: Bearer ${{ inputs.api-key }}" \
           -H "Content-Type: application/json" \
           -d "{
-            \"service\": \"${{ inputs.service }}\",
+            \"repositoryId\": \"${{ github.repository_id }}\",
+            \"repositoryName\": \"${{ github.event.repository.name }}\",
             \"environment\": \"${{ inputs.environment }}\",
             \"tag\": \"${TAG}\",
             \"branch\": \"${BRANCH}\",
@@ -53,7 +50,7 @@ runs:
 
         if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 300 ]; then
           echo "✅ Deployment reported successfully (HTTP $HTTP_CODE)"
-          echo "   Service: ${{ inputs.service }}"
+          echo "   Repository: ${{ github.event.repository.name }} (${{ github.repository_id }})"
           echo "   Environment: ${{ inputs.environment }}"
           echo "   Tag: ${TAG:-'(none)'}"
           echo "   Branch: ${BRANCH}"

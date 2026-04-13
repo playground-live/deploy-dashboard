@@ -10,8 +10,9 @@ datasource db {
 
 model Service {
   id           String       @id @default(cuid())
-  name         String       @unique
-  repository   String
+  repositoryId   String       @unique
+  name           String
+  repositoryName String
   description  String?
   displayOrder Int          @default(0)
   createdAt    DateTime     @default(now())

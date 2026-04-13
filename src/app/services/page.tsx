@@ -79,6 +79,7 @@ export default function ServicesPage() {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[60px]">順序</TableHead>
+                <TableHead>Repository ID</TableHead>
                 <TableHead>サービス名</TableHead>
                 <TableHead>リポジトリ</TableHead>
                 <TableHead>説明</TableHead>
@@ -88,14 +89,14 @@ export default function ServicesPage() {
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center py-12">
+                  <TableCell colSpan={6} className="text-center py-12">
                     読み込み中...
                   </TableCell>
                 </TableRow>
               ) : services.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    colSpan={5}
+                    colSpan={6}
                     className="text-center py-12 text-muted-foreground"
                   >
                     サービスが登録されていません
@@ -107,17 +108,20 @@ export default function ServicesPage() {
                     <TableCell className="text-center font-mono text-sm">
                       {service.displayOrder}
                     </TableCell>
+                    <TableCell className="font-mono text-sm text-muted-foreground">
+                      {service.repositoryId}
+                    </TableCell>
                     <TableCell className="font-mono font-medium">
                       {service.name}
                     </TableCell>
                     <TableCell>
                       <a
-                        href={`https://github.com/${service.repository}`}
+                        href={`https://github.com/${service.repositoryName}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-sm text-blue-600 hover:underline dark:text-blue-400"
                       >
-                        {service.repository}
+                        {service.repositoryName}
                       </a>
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">

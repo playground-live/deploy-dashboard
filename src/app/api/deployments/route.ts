@@ -5,7 +5,8 @@ import { validateApiKey } from "@/lib/auth";
 import { ENVIRONMENTS } from "@/lib/constants";
 
 const deploymentSchema = z.object({
-  service: z.string().min(1),
+  repositoryId: z.string().min(1),
+  repositoryName: z.string().min(1),
   environment: z.enum(ENVIRONMENTS),
   tag: z.string().optional().default(""),
   branch: z.string().min(1),
@@ -34,14 +35,15 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const { service: serviceName, environment, tag, branch, commitSha, deployedBy } = result.data;
+    const { repositoryId, repositoryName, environment, tag, branch, commitSha, deployedBy } = result.data;
 
     const service = await prisma.service.upsert({
-      where: { name: serviceName },
-      update: {},
+      where: { repositoryId },
+      update: { repositoryName },
       create: {
-        name: serviceName,
-        repository: serviceName,
+        repositoryId,
+        name: repositoryName,
+        repositoryName,
       },
     });
 

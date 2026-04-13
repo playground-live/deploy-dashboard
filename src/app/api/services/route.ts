@@ -3,8 +3,9 @@ import { z } from "zod/v4";
 import { prisma } from "@/lib/prisma";
 
 const createServiceSchema = z.object({
+  repositoryId: z.string().min(1),
   name: z.string().min(1),
-  repository: z.string().min(1),
+  repositoryName: z.string().min(1),
   description: z.string().optional(),
   displayOrder: z.number().int().optional(),
 });
@@ -12,7 +13,6 @@ const createServiceSchema = z.object({
 const updateServiceSchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1).optional(),
-  repository: z.string().min(1).optional(),
   description: z.string().optional(),
   displayOrder: z.number().int().optional(),
 });
@@ -41,11 +41,11 @@ export async function POST(request: NextRequest) {
   }
 
   const existing = await prisma.service.findUnique({
-    where: { name: result.data.name },
+    where: { repositoryId: result.data.repositoryId },
   });
   if (existing) {
     return NextResponse.json(
-      { error: "Service with this name already exists" },
+      { error: "Service with this repositoryId already exists" },
       { status: 409 }
     );
   }

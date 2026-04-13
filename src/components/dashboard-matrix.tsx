@@ -27,7 +27,7 @@ export function DashboardMatrix() {
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [selectedService, setSelectedService] = useState<string | null>(null);
+  const [selectedRepoId, setSelectedRepoId] = useState<string | null>(null);
   const [selectedEnv, setSelectedEnv] = useState<Environment | null>(null);
 
   const fetchData = useCallback(async () => {
@@ -51,8 +51,8 @@ export function DashboardMatrix() {
     return () => clearInterval(interval);
   }, [fetchData]);
 
-  const handleCellClick = (serviceName: string, env: Environment) => {
-    setSelectedService(serviceName);
+  const handleCellClick = (repositoryId: string, env: Environment) => {
+    setSelectedRepoId(repositoryId);
     setSelectedEnv(env);
     setDrawerOpen(true);
   };
@@ -128,8 +128,9 @@ export function DashboardMatrix() {
                         )}
                       </TooltipTrigger>
                       <TooltipContent side="right">
-                        <div className="text-xs">
-                          <div>{service.repository}</div>
+                        <div className="text-xs space-y-0.5">
+                          <div className="text-muted-foreground">ID: {service.repositoryId}</div>
+                          <div>{service.repositoryName}</div>
                           {service.description && (
                             <div className="text-muted-foreground mt-1">
                               {service.description}
@@ -143,7 +144,7 @@ export function DashboardMatrix() {
                     <TableCell key={env} className="p-1">
                       <DeploymentCell
                         deployment={service.deployments[env]}
-                        onClick={() => handleCellClick(service.name, env)}
+                        onClick={() => handleCellClick(service.repositoryId, env)}
                       />
                     </TableCell>
                   ))}
@@ -157,7 +158,8 @@ export function DashboardMatrix() {
       <DeploymentHistoryDrawer
         open={drawerOpen}
         onOpenChange={setDrawerOpen}
-        serviceName={selectedService}
+        repositoryId={selectedRepoId}
+        serviceName={services.find((s) => s.repositoryId === selectedRepoId)?.name}
         environment={selectedEnv}
       />
     </>
