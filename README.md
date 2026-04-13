@@ -71,12 +71,12 @@ Vercel のダッシュボードで環境変数 (`DATABASE_URL`, `DEPLOY_API_KEY`
 
 各サービスのデプロイワークフローに、デプロイ完了後のステップとして以下を追加する。
 
-### 前提: Organization Secrets の設定
+### 前提: Organization Secrets / Variables の設定
 
-GitHub Organization の Settings > Secrets に以下を追加:
+GitHub Organization の Settings > Secrets and variables > Actions に以下を追加:
 
-- `DEPLOY_DASHBOARD_URL`: Deploy Dashboard の URL (例: `https://deploy-dashboard.vercel.app`)
-- `DEPLOY_DASHBOARD_API_KEY`: `.env` の `DEPLOY_API_KEY` と同じ値
+- **Variables** に `DEPLOY_DASHBOARD_URL`: Deploy Dashboard の URL (例: `https://deploy-dashboard.vercel.app`)
+- **Secrets** に `DEPLOY_DASHBOARD_API_KEY`: `.env` の `DEPLOY_API_KEY` と同じ値
 
 ### ワークフローへの組み込み
 
@@ -87,7 +87,7 @@ GitHub Organization の Settings > Secrets に以下を追加:
   with:
     service: ${{ github.event.repository.name }}
     environment: dev  # 環境に応じて変更
-    dashboard-url: ${{ secrets.DEPLOY_DASHBOARD_URL }}
+    dashboard-url: ${{ vars.DEPLOY_DASHBOARD_URL }}
     api-key: ${{ secrets.DEPLOY_DASHBOARD_API_KEY }}
 ```
 
