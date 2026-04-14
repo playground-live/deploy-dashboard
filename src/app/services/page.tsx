@@ -129,7 +129,7 @@ export default function ServicesPage() {
                     </TableCell>
                     <TableCell>
                       <Button
-                        variant="ghost"
+                        variant="outline"
                         size="sm"
                         onClick={() => handleEdit(service)}
                       >
