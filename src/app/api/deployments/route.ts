@@ -7,6 +7,7 @@ import { ENVIRONMENTS } from "@/lib/constants";
 const deploymentSchema = z.object({
   repositoryId: z.string().min(1),
   repositoryName: z.string().min(1),
+  serviceKey: z.string().min(1),
   environment: z.enum(ENVIRONMENTS),
   tag: z.string().optional().default(""),
   branch: z.string().min(1),
@@ -35,17 +36,26 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const { repositoryId, repositoryName, environment, tag, branch, commitSha, deployedBy } = result.data;
+    const { repositoryId, repositoryName, serviceKey, environment, tag, branch, commitSha, deployedBy } = result.data;
 
-    const repoShortName = repositoryName.split("/").pop() ?? repositoryName;
+    const repository = await prisma.repository.upsert({
+      where: { githubId: repositoryId },
+      update: { fullName: repositoryName },
+      create: { githubId: repositoryId, fullName: repositoryName },
+    });
 
     const service = await prisma.service.upsert({
-      where: { repositoryId },
-      update: { repositoryName },
+      where: {
+        repositoryId_serviceKey: {
+          repositoryId: repository.id,
+          serviceKey,
+        },
+      },
+      update: {},
       create: {
-        repositoryId,
-        name: repoShortName,
-        repositoryName,
+        repositoryId: repository.id,
+        serviceKey,
+        name: serviceKey,
       },
     });
 
@@ -73,7 +83,14 @@ export async function POST(request: NextRequest) {
 export async function GET() {
   try {
     const services = await prisma.service.findMany({
-      orderBy: { displayOrder: "asc" },
+      include: {
+        repository: true,
+        group: true,
+      },
+      orderBy: [
+        { group: { displayOrder: "asc" } },
+        { displayOrder: "asc" },
+      ],
     });
 
     const latestDeployments = await prisma.$queryRaw<
@@ -102,7 +119,24 @@ export async function GET() {
     }
 
     const data = services.map((service) => ({
-      ...service,
+      id: service.id,
+      serviceKey: service.serviceKey,
+      name: service.name,
+      description: service.description,
+      displayOrder: service.displayOrder,
+      repository: {
+        id: service.repository.id,
+        githubId: service.repository.githubId,
+        fullName: service.repository.fullName,
+      },
+      group: service.group
+        ? {
+            id: service.group.id,
+            name: service.group.name,
+            description: service.group.description,
+            displayOrder: service.group.displayOrder,
+          }
+        : null,
       deployments: deploymentMap[service.id] ?? {},
     }));
 

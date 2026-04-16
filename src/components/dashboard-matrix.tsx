@@ -22,12 +22,38 @@ import type { ServiceWithDeployments } from "@/types";
 
 const REFRESH_INTERVAL = 30_000;
 
+interface GroupedServices {
+  groupName: string | null;
+  services: ServiceWithDeployments[];
+}
+
+function groupServices(services: ServiceWithDeployments[]): GroupedServices[] {
+  const groups: Map<string | null, ServiceWithDeployments[]> = new Map();
+
+  for (const service of services) {
+    const key = service.group?.name ?? null;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key)!.push(service);
+  }
+
+  const result: GroupedServices[] = [];
+  // Named groups first (already sorted by group.displayOrder from API)
+  for (const [key, svcs] of groups) {
+    if (key !== null) result.push({ groupName: key, services: svcs });
+  }
+  // Ungrouped last
+  const ungrouped = groups.get(null);
+  if (ungrouped) result.push({ groupName: null, services: ungrouped });
+
+  return result;
+}
+
 export function DashboardMatrix() {
   const [services, setServices] = useState<ServiceWithDeployments[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [selectedRepoId, setSelectedRepoId] = useState<string | null>(null);
+  const [selectedServiceId, setSelectedServiceId] = useState<string | null>(null);
   const [selectedEnv, setSelectedEnv] = useState<Environment | null>(null);
 
   const fetchData = useCallback(async () => {
@@ -51,11 +77,13 @@ export function DashboardMatrix() {
     return () => clearInterval(interval);
   }, [fetchData]);
 
-  const handleCellClick = (repositoryId: string, env: Environment) => {
-    setSelectedRepoId(repositoryId);
+  const handleCellClick = (serviceId: string, env: Environment) => {
+    setSelectedServiceId(serviceId);
     setSelectedEnv(env);
     setDrawerOpen(true);
   };
+
+  const selectedService = services.find((s) => s.id === selectedServiceId);
 
   if (loading) {
     return (
@@ -66,6 +94,8 @@ export function DashboardMatrix() {
       </div>
     );
   }
+
+  const grouped = groupServices(services);
 
   return (
     <>
@@ -115,40 +145,56 @@ export function DashboardMatrix() {
                 </TableCell>
               </TableRow>
             ) : (
-              services.map((service) => (
-                <TableRow key={service.id}>
-                  <TableCell className="sticky left-0 z-10 bg-background border-r font-medium">
-                    <Tooltip>
-                      <TooltipTrigger className="text-left">
-                        <div className="font-mono text-sm">{service.name}</div>
-                        {service.description && (
-                          <div className="text-xs text-muted-foreground truncate max-w-[140px]">
-                            {service.description}
-                          </div>
-                        )}
-                      </TooltipTrigger>
-                      <TooltipContent side="right">
-                        <div className="text-xs space-y-0.5">
-                          <div className="text-muted-foreground">ID: {service.repositoryId}</div>
-                          <div>{service.repositoryName.split("/").pop()}</div>
-                          {service.description && (
-                            <div className="text-muted-foreground mt-1">
-                              {service.description}
+              grouped.map((group) => (
+                <>
+                  {group.groupName && (
+                    <TableRow key={`group-${group.groupName}`}>
+                      <TableCell
+                        colSpan={ENVIRONMENTS.length + 1}
+                        className="sticky left-0 bg-muted/50 py-1.5 px-4 text-xs font-semibold text-muted-foreground"
+                      >
+                        {group.groupName}
+                      </TableCell>
+                    </TableRow>
+                  )}
+                  {group.services.map((service) => (
+                    <TableRow key={service.id}>
+                      <TableCell className="sticky left-0 z-10 bg-background border-r font-medium">
+                        <Tooltip>
+                          <TooltipTrigger className="text-left">
+                            <div className="font-mono text-sm">{service.name}</div>
+                            {service.description && (
+                              <div className="text-xs text-muted-foreground truncate max-w-[140px]">
+                                {service.description}
+                              </div>
+                            )}
+                          </TooltipTrigger>
+                          <TooltipContent side="right">
+                            <div className="text-xs space-y-0.5">
+                              <div className="text-muted-foreground">
+                                {service.repository.fullName}
+                              </div>
+                              <div className="font-mono">{service.serviceKey}</div>
+                              {service.description && (
+                                <div className="text-muted-foreground mt-1">
+                                  {service.description}
+                                </div>
+                              )}
                             </div>
-                          )}
-                        </div>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TableCell>
-                  {ENVIRONMENTS.map((env) => (
-                    <TableCell key={env} className="p-1">
-                      <DeploymentCell
-                        deployment={service.deployments[env]}
-                        onClick={() => handleCellClick(service.repositoryId, env)}
-                      />
-                    </TableCell>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TableCell>
+                      {ENVIRONMENTS.map((env) => (
+                        <TableCell key={env} className="p-1">
+                          <DeploymentCell
+                            deployment={service.deployments[env]}
+                            onClick={() => handleCellClick(service.id, env)}
+                          />
+                        </TableCell>
+                      ))}
+                    </TableRow>
                   ))}
-                </TableRow>
+                </>
               ))
             )}
           </TableBody>
@@ -158,8 +204,8 @@ export function DashboardMatrix() {
       <DeploymentHistoryDrawer
         open={drawerOpen}
         onOpenChange={setDrawerOpen}
-        repositoryId={selectedRepoId}
-        serviceName={services.find((s) => s.repositoryId === selectedRepoId)?.name}
+        serviceId={selectedServiceId}
+        serviceName={selectedService?.name}
         environment={selectedEnv}
       />
     </>

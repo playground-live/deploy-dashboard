@@ -3,26 +3,43 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const services = [
-  { repositoryId: "100000001", name: "user-api", repositoryName: "myorg/user-api", description: "ユーザー管理API", displayOrder: 1 },
-  { repositoryId: "100000002", name: "auth-service", repositoryName: "myorg/auth-service", description: "認証サービス", displayOrder: 2 },
-  { repositoryId: "100000003", name: "payment-api", repositoryName: "myorg/payment-api", description: "決済API", displayOrder: 3 },
-  { repositoryId: "100000004", name: "notification-service", repositoryName: "myorg/notification-service", description: "通知サービス", displayOrder: 4 },
-  { repositoryId: "100000005", name: "web-frontend", repositoryName: "myorg/web-frontend", description: "Webフロントエンド", displayOrder: 5 },
+const seeds = [
+  { githubId: "100000001", repoName: "myorg/user-api", serviceKey: "user-api", name: "user-api", description: "ユーザー管理API", displayOrder: 1 },
+  { githubId: "100000002", repoName: "myorg/auth-service", serviceKey: "auth-service", name: "auth-service", description: "認証サービス", displayOrder: 2 },
+  { githubId: "100000003", repoName: "myorg/payment-api", serviceKey: "payment-api", name: "payment-api", description: "決済API", displayOrder: 3 },
+  { githubId: "100000004", repoName: "myorg/notification-service", serviceKey: "notification-service", name: "notification-service", description: "通知サービス", displayOrder: 4 },
+  { githubId: "100000005", repoName: "myorg/web-frontend", serviceKey: "web-frontend", name: "web-frontend", description: "Webフロントエンド", displayOrder: 5 },
 ];
 
 async function main() {
   console.log("Seeding services...");
 
-  for (const service of services) {
+  for (const seed of seeds) {
+    const repository = await prisma.repository.upsert({
+      where: { githubId: seed.githubId },
+      update: { fullName: seed.repoName },
+      create: { githubId: seed.githubId, fullName: seed.repoName },
+    });
+
     await prisma.service.upsert({
-      where: { repositoryId: service.repositoryId },
-      update: { repositoryName: service.repositoryName },
-      create: service,
+      where: {
+        repositoryId_serviceKey: {
+          repositoryId: repository.id,
+          serviceKey: seed.serviceKey,
+        },
+      },
+      update: {},
+      create: {
+        repositoryId: repository.id,
+        serviceKey: seed.serviceKey,
+        name: seed.name,
+        description: seed.description,
+        displayOrder: seed.displayOrder,
+      },
     });
   }
 
-  console.log(`Seeded ${services.length} services.`);
+  console.log(`Seeded ${seeds.length} services.`);
 }
 
 main()

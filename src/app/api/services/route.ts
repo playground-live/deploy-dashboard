@@ -3,11 +3,13 @@ import { z } from "zod/v4";
 import { prisma } from "@/lib/prisma";
 
 const createServiceSchema = z.object({
-  repositoryId: z.string().min(1),
-  name: z.string().min(1),
+  githubId: z.string().min(1),
   repositoryName: z.string().min(1),
+  serviceKey: z.string().min(1),
+  name: z.string().min(1),
   description: z.string().optional(),
   displayOrder: z.number().int().optional(),
+  groupId: z.string().optional(),
 });
 
 const updateServiceSchema = z.object({
@@ -15,11 +17,19 @@ const updateServiceSchema = z.object({
   name: z.string().min(1).optional(),
   description: z.string().optional(),
   displayOrder: z.number().int().optional(),
+  groupId: z.string().nullable().optional(),
 });
 
 export async function GET() {
   const services = await prisma.service.findMany({
-    orderBy: { displayOrder: "asc" },
+    include: {
+      repository: true,
+      group: true,
+    },
+    orderBy: [
+      { group: { displayOrder: "asc" } },
+      { displayOrder: "asc" },
+    ],
   });
   return NextResponse.json(services);
 }
@@ -40,18 +50,52 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const existing = await prisma.service.findUnique({
-    where: { repositoryId: result.data.repositoryId },
-  });
-  if (existing) {
+  const { githubId, repositoryName, serviceKey, name, description, displayOrder, groupId } = result.data;
+
+  try {
+    const repository = await prisma.repository.upsert({
+      where: { githubId },
+      update: { fullName: repositoryName },
+      create: { githubId, fullName: repositoryName },
+    });
+
+    const existing = await prisma.service.findUnique({
+      where: {
+        repositoryId_serviceKey: {
+          repositoryId: repository.id,
+          serviceKey,
+        },
+      },
+    });
+    if (existing) {
+      return NextResponse.json(
+        { error: "Service with this repositoryId + serviceKey already exists" },
+        { status: 409 }
+      );
+    }
+
+    const service = await prisma.service.create({
+      data: {
+        repositoryId: repository.id,
+        serviceKey,
+        name,
+        description,
+        displayOrder,
+        groupId,
+      },
+      include: {
+        repository: true,
+        group: true,
+      },
+    });
+    return NextResponse.json(service, { status: 201 });
+  } catch (error) {
+    console.error("POST /api/services error:", error);
     return NextResponse.json(
-      { error: "Service with this repositoryId already exists" },
-      { status: 409 }
+      { error: "Internal server error", message: error instanceof Error ? error.message : "Unknown error" },
+      { status: 500 }
     );
   }
-
-  const service = await prisma.service.create({ data: result.data });
-  return NextResponse.json(service, { status: 201 });
 }
 
 export async function PATCH(request: NextRequest) {
@@ -76,6 +120,10 @@ export async function PATCH(request: NextRequest) {
     const service = await prisma.service.update({
       where: { id },
       data,
+      include: {
+        repository: true,
+        group: true,
+      },
     });
     return NextResponse.json(service);
   } catch {

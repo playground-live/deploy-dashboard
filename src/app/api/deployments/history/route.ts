@@ -3,29 +3,21 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
-  const repositoryId = searchParams.get("repositoryId");
+  const serviceId = searchParams.get("serviceId");
   const environment = searchParams.get("environment");
   const cursor = searchParams.get("cursor");
   const limit = Math.min(Number(searchParams.get("limit") || "20"), 100);
 
-  if (!repositoryId || !environment) {
+  if (!serviceId || !environment) {
     return NextResponse.json(
-      { error: "repositoryId and environment query params are required" },
+      { error: "serviceId and environment query params are required" },
       { status: 400 }
     );
   }
 
-  const service = await prisma.service.findUnique({
-    where: { repositoryId },
-  });
-
-  if (!service) {
-    return NextResponse.json({ error: "Service not found" }, { status: 404 });
-  }
-
   const deployments = await prisma.deployment.findMany({
     where: {
-      serviceId: service.id,
+      serviceId,
       environment,
     },
     orderBy: { deployedAt: "desc" },

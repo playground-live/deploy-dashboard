@@ -11,25 +11,40 @@ export interface DeploymentInfo {
   deployedAt: string;
 }
 
-export interface ServiceWithDeployments {
+export interface RepositoryInfo {
   id: string;
-  repositoryId: string;
+  githubId: string;
+  fullName: string;
+}
+
+export interface ServiceGroupInfo {
+  id: string;
   name: string;
-  repositoryName: string;
   description: string | null;
   displayOrder: number;
-  deployments: Partial<Record<Environment, DeploymentInfo>>;
 }
 
 export interface ServiceInfo {
   id: string;
-  repositoryId: string;
+  serviceKey: string;
   name: string;
-  repositoryName: string;
   description: string | null;
   displayOrder: number;
+  repository: RepositoryInfo;
+  group: ServiceGroupInfo | null;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface ServiceWithDeployments {
+  id: string;
+  serviceKey: string;
+  name: string;
+  description: string | null;
+  displayOrder: number;
+  repository: RepositoryInfo;
+  group: ServiceGroupInfo | null;
+  deployments: Partial<Record<Environment, DeploymentInfo>>;
 }
 
 export interface DeploymentHistoryResponse {
