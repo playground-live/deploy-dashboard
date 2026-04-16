@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ENVIRONMENT_META, type Environment } from "@/lib/constants";
+import { extractBranchVersion } from "@/lib/utils";
 import type { DeploymentInfo, DeploymentHistoryResponse } from "@/types";
 
 interface Props {
@@ -104,7 +105,7 @@ export function DeploymentHistoryDrawer({
                       </Badge>
                     ) : (
                       <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 text-xs font-mono">
-                        {item.branch}
+                        {extractBranchVersion(item.branch)}
                       </Badge>
                     )}
                     {index === 0 && (

@@ -6,6 +6,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { extractBranchVersion } from "@/lib/utils";
 import type { DeploymentInfo } from "@/types";
 
 function formatRelativeTime(dateStr: string): string {
@@ -38,7 +39,7 @@ export function DeploymentCell({ deployment, onClick }: DeploymentCellProps) {
   }
 
   const isTagged = Boolean(deployment.tag);
-  const displayVersion = deployment.tag || deployment.branch;
+  const displayVersion = deployment.tag || extractBranchVersion(deployment.branch);
   const shortSha = deployment.commitSha.slice(0, 7);
 
   return (
