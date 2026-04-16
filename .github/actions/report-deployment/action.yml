@@ -5,6 +5,9 @@ inputs:
   environment:
     description: 'デプロイ先環境 (dev, test, test2, test3, sandbox, stg, prod)'
     required: true
+  service-key:
+    description: 'サービス識別キー (モノレポ内のサービスを区別する。例: user-api, worker)'
+    required: true
   dashboard-url:
     description: 'Deploy DashboardのURL (例: https://deploy-dashboard.vercel.app)'
     required: true
@@ -41,6 +44,7 @@ runs:
           -d "{
             \"repositoryId\": \"${{ github.repository_id }}\",
             \"repositoryName\": \"${{ github.repository }}\",
+            \"serviceKey\": \"${{ inputs.service-key }}\",
             \"environment\": \"${{ inputs.environment }}\",
             \"tag\": \"${TAG}\",
             \"branch\": \"${BRANCH}\",
@@ -51,6 +55,7 @@ runs:
         if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 300 ]; then
           echo "✅ Deployment reported successfully (HTTP $HTTP_CODE)"
           echo "   Repository: ${{ github.repository }} (${{ github.repository_id }})"
+          echo "   Service Key: ${{ inputs.service-key }}"
           echo "   Environment: ${{ inputs.environment }}"
           echo "   Tag: ${TAG:-'(none)'}"
           echo "   Branch: ${BRANCH}"

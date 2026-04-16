@@ -23,7 +23,7 @@ jobs:
       - name: Report deployment
         uses: myorg/deploy-dashboard/.github/actions/report-deployment@main
         with:
-          service: ${{ github.event.repository.name }}
           environment: ${{ matrix.environment }}
+          service-key: ${{ github.event.repository.name }}
           dashboard-url: ${{ secrets.DEPLOY_DASHBOARD_URL }}
           api-key: ${{ secrets.DEPLOY_DASHBOARD_API_KEY }}

@@ -22,5 +22,6 @@ jobs:
         uses: myorg/deploy-dashboard/.github/actions/report-deployment@main
         with:
           environment: dev
+          service-key: ${{ github.event.repository.name }}
           dashboard-url: ${{ vars.DEPLOY_DASHBOARD_URL }}
           api-key: ${{ secrets.DEPLOY_DASHBOARD_API_KEY }}
